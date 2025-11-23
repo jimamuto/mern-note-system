@@ -14,29 +14,27 @@ app.use(rateLimiter);
 
 // Add CORS middleware
 if (process.env.NODE_ENV !== 'production') {
-  app.use(cors({
-    origin: 'http://localhost:5173', // Your Vite frontend URL
-    credentials: true
-  }));
+app.use(cors({
+  origin: 'http://localhost:5173', // Your Vite frontend URL
+  credentials: true
+}));
+
 }
 
 mongoose.connect(process.env.MONGO_URI)
-  .then(() => console.log('Connected to MongoDB!'))
-  .catch(err => console.error('MongoDB connection error:', err));
-
-// Routes should come BEFORE static files and catch-all route
-app.use('/api', notesRoutes);
-
-// Serve static files from React build
-if (process.env.NODE_ENV === 'production') {
-  app.use(express.static(path.join(__dirname, '../frontend/dist')));
+  .then(() => console.log('Connected!'));
   
-  // Catch-all handler: send back React's index.html file for SPA
-  app.get('*', (req, res) => {
-    res.sendFile(path.join(__dirname, '../frontend/dist', 'index.html'));
-  });
-}
-
 app.listen(process.env.PORT, () => {
   console.log(`Server is running on port ${process.env.PORT}`);
+});
+if (process.env.NODE_ENV === 'production') {
+  app.use(express.static('frontend/dist'));
+}
+//routes to routes 
+app.use('/api', notesRoutes);
+app.use(express.static(path.join(__dirname, '../frontend/dist')));
+
+
+app.get('/*', (req, res) => {
+  res.sendFile(path.join(__dirname, '../frontend/dist', 'index.html'));
 });
