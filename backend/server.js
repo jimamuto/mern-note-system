@@ -14,11 +14,10 @@ app.use(rateLimiter);
 
 // Add CORS middleware
 app.use(cors({
-  origin: process.env.NODE_ENV === 'production' 
-    ? true
-    : 'http://localhost:5173',
+  origin: "*",
   credentials: true
 }));
+
 
 mongoose.connect(process.env.MONGO_URI)
   .then(() => console.log('Connected to MongoDB!'))
