@@ -13,12 +13,12 @@ app.use(express.json());
 app.use(rateLimiter);
 
 // Add CORS middleware
-if (process.env.NODE_ENV !== 'production') {
-  app.use(cors({
-    origin: 'http://localhost:5173',
-    credentials: true
-  }));
-}
+app.use(cors({
+  origin: process.env.NODE_ENV === 'production' 
+    ? true
+    : 'http://localhost:5173',
+  credentials: true
+}));
 
 mongoose.connect(process.env.MONGO_URI)
   .then(() => console.log('Connected to MongoDB!'))
@@ -31,11 +31,8 @@ app.use('/api', notesRoutes);
 if (process.env.NODE_ENV === 'production') {
   app.use(express.static(path.join(__dirname, '../frontend/dist')));
   
-  // For SPA routing,:
-  app.use((req, res, next) => {
-    if (req.path.startsWith('/api')) {
-      return next();
-    }
+  // Handle SPA routing - use a different approach
+  app.use((req, res) => {
     res.sendFile(path.join(__dirname, '../frontend/dist', 'index.html'));
   });
 }
