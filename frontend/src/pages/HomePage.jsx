@@ -2,18 +2,17 @@ import React, { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import NoteList from '../components/NoteList.jsx'
 import toast from 'react-hot-toast'
+import { API_URLS } from '../config.js'
 
 const HomePage = () => {
   const [notes, setNotes] = useState([])
   const [loading, setLoading] = useState(true)
   const [deletingId, setDeletingId] = useState(null)
-  const API_BASE = import.meta.env.VITE_API_BASE_URL
 
   const fetchNotes = async () => {
     try {
-      const response = await fetch(`${API_BASE}/api/notes`)
+      const response = await fetch(API_URLS.notes)
       if (!response.ok) throw new Error('Failed to fetch notes')
-
       const data = await response.json()
       setNotes(data)
     } catch (error) {
@@ -30,13 +29,8 @@ const HomePage = () => {
   const deleteNote = async (id) => {
     try {
       setDeletingId(id)
-
-      const response = await fetch(`${API_BASE}/api/notes/${id}`, {
-        method: 'DELETE',
-      })
-
+      const response = await fetch(API_URLS.noteById(id), { method: 'DELETE' })
       if (!response.ok) throw new Error('Failed to delete note')
-
       toast.success('Note deleted')
       setNotes(notes.filter((note) => note._id !== id))
     } catch (error) {

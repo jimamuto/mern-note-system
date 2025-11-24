@@ -2,14 +2,14 @@ import React from 'react'
 import { useNavigate } from 'react-router-dom'
 import NoteForm from '../components/NoteForm.jsx'
 import toast from 'react-hot-toast'
+import { API_URLS } from '../config.js'
 
 const CreateNotePage = () => {
   const navigate = useNavigate()
-  const API_BASE = import.meta.env.VITE_API_BASE_URL
 
   const handleSubmit = async (formData) => {
     try {
-      const response = await fetch(`${API_BASE}/api/notes`, {
+      const response = await fetch(API_URLS.notes, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData),
